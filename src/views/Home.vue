@@ -1,22 +1,29 @@
-<template>  
+<!-- <template>  
+
   <div id="loading_page">
     <img alt="Logo" src="../assets/test.png" id="logoBox_loading"/>
   </div>
+
   <div v-if="addCrypto == true">
     <AddCrypto :addCrypto="addCrypto" @ChangeValueAddCrypto="ChangeValueAddCrypto" id="add_crypto"/>
   </div>
+
   <div v-if="navWallet == true">
     <NavWallet :navWallet="navWallet" @ChangeValueWalletNav="ChangeValueWalletNav" @AddWallet="AddWallet" id="test"/>
   </div>
+
   <div v-if="updateCrypto == true">
     <UpdateCrypto :updateCryptoName="updateCryptoName" :updateCryptoBuy="updateCryptoBuy" :updateCryptoQtt="updateCryptoQtt" @UpdateValueCrypto="UpdateValueCrypto" id="update_crypto"/>
   </div>
+
   <div v-if="updateDeposit == true">
     <UpdateDeposit :updateDeposit="userData.depositSelect" @UpdateDeposit="UpdateDeposit" id="update_deposit"/>
   </div>
+
   <div v-if="addWallet == true">
     <AddWallet @AddWallet="AddWallet" id="add_wallet"/>
   </div>
+
   <div class="topContener">
     <div class="burgerNav">
       <img src="../assets/burger-bar.png" alt="Burger" class="burger" @click="closeNav">
@@ -25,7 +32,9 @@
       <img alt="Logo" src="../assets/test.png" class="logoBox"/>
     </div>
   </div>
+
   <div class="mainContener">
+
     <div class="leftHomeContener">
       <div class="assetsList">
         <CryptoList :addCrypto="addCrypto" @ChangeValueAddCrypto="ChangeValueAddCrypto" @UpdateValueCrypto="UpdateValueCrypto"/>
@@ -34,6 +43,7 @@
         <ListWallet @AddWallet="AddWallet"/>
       </div>
     </div>
+
     <div class="rightHomeContener">
       <div class="chartsLine">
         <ChartStat/>
@@ -53,13 +63,85 @@
         </div>
       </div>
     </div>
+
+  </div>
+
+</template> -->
+
+
+<template>
+  <div class="ca-lft-container">
+
+    <div class="ca-container-logo">
+      <img src="../assets/logov2.png">
+    </div>
+
+    <div class="ca-container-sold">
+      <CurrentBalance/>
+      <ProfitLoss/>
+      <!-- <div class="ca-box-sold">
+        <span class="sold-title">Current balance</span>
+        <span class="sold-data">8 240 $</span>
+        <span class="sold-data-convert">7 856 $</span>
+      </div> -->
+
+      <!-- <div class="ca-box-sold">
+        <span class="sold-title">Current balance</span>
+        <span class="sold-data">+ 320 $</span>
+        <span class="sold-data-convert">+ 3.05 %</span>
+      </div> -->
+    </div>
+
+    <div class="ca-container-asset">
+      <AddNewAsset/>
+    </div>
+
+    <div class="ca-container-data">
+      <UserData/>
+    </div>
+
+  </div>
+
+  <div class="ca-ctr-container">
+    <AssetList/>
+  </div>
+
+  <div class="ca-rht-container">
+    <div class="ca-container-user">
+      <span>test@gmail.com</span>
+      <button @click="logOutUser">Disconnect</button>
+    </div>
+
+    <div class="ca-container-wallet-data">
+
+      <div class="wallet-name">
+        <span>{{ userData.walletSelected }}</span>
+        <span class="number-asset">{{userData.countAsset}} asset</span>
+      </div>
+
+      <WalletGraph/>
+
+      <WalletStatistic/>
+
+      <AssetStatistic/>
+
+    </div>
   </div>
 </template>
 
+
 <script>
     // @ is an alias to /src
-import Deposit from "@/components/Deposit.widget.vue";
-import ChartStat from "@/components/ChartStat.widget.vue";
+import CurrentBalance from "@/components/left-container/CurrentBalance.card.vue";
+import ProfitLoss from "@/components/left-container/ProfitLoss.card.vue";
+import AddNewAsset from "@/components/left-container/AddNewAsset.card.vue";
+import UserData from "@/components/left-container/UserData.card.vue";
+import AssetList from "@/components/middle-container/AssetList.card.vue";
+import WalletGraph from "@/components/right-container/WalletGraph.card.vue";
+import WalletStatistic from "@/components/right-container/WalletStatistic.card.vue";
+import AssetStatistic from "@/components/right-container/AssetStatistic.card.vue";
+
+/*import ChartStat from "@/components/ChartStat.widget.vue";
 import ListWallet from "@/components/ListWallet.widget.vue";
 import WinLost from "@/components/WinLost.widget.vue";
 import CryptoList from "@/components/CryptoList.widget.vue";
@@ -67,7 +149,8 @@ import AddCrypto from '@/components/AddCrypto.widget.vue'
 import NavWallet from '@/components/NavWallet.widget.vue'
 import UpdateCrypto from '@/components/UpdateCrypto.widget.vue'
 import UpdateDeposit from '@/components/UpdateDeposit.widget.vue'
-import AddWallet from '@/components/AddWallet.widget.vue'
+import AddWallet from '@/components/AddWallet.widget.vue' */
+
 import { mapState } from 'vuex'
 import { auth, signOut } from '../plug-in/firebase.js';
 
@@ -75,7 +158,16 @@ import { auth, signOut } from '../plug-in/firebase.js';
 export default {
   name: "Home",
   components: {
-    Deposit,
+    CurrentBalance,
+    ProfitLoss,
+    AddNewAsset,
+    UserData,
+    AssetList,
+    WalletGraph,
+    WalletStatistic,
+    AssetStatistic,
+
+    /* Deposit,
     ChartStat,
     WinLost,
     AddCrypto,
@@ -84,7 +176,8 @@ export default {
     NavWallet,
     UpdateCrypto,
     UpdateDeposit,
-    AddWallet
+    AddWallet */
+    
   },
   data: function () {
     return {
@@ -97,32 +190,14 @@ export default {
       addWallet: false,
       updateCryptoName: '',
       updateCryptoBuy: 0,
-      updateCryptoQtt: 0
+      updateCryptoQtt: 0,
+      chartDataDly: [[10, 2], [20, 4]],
+
+      countAsset: this.getUserDataCrypto,
     }
   },
   computed: {
     ...mapState(['userData']),
-    activeButtonHome: function () {
-      if (this.page == 'home') {
-        return true
-      } else {
-        return false
-      }
-    },
-    activeButtonTrade: function () {
-      if (this.page == 'trade') {
-        return true
-      } else {
-        return false
-      }
-    },
-    activeButtonSwap: function () {
-      if (this.page == 'swap') {
-        return true
-      } else {
-        return false
-      }
-    },
   },
   methods: {
     logOutUser: function () {
@@ -274,7 +349,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<!-- <style lang="scss">
   .topContener {
     height: 10%;
     width: 100%;
@@ -513,4 +588,225 @@ export default {
           height: 815px;
       }
   }
+</style> -->
+
+<style lang="scss">
+
+/* GLOBAL STYLE */
+
+.ca-box-sold {
+  background-color: #F7F7F7;
+  height: 93px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  padding: 0px 17px;
+  margin: 8px;
+  min-width: 100px;
+}
+.sold-title {
+  font-size: 12px;
+  font-weight: 500;
+}
+.sold-data {
+  font-size: 20px;
+  font-weight: 500;
+}
+.sold-data-convert {
+  font-size: 12px;
+  font-weight: 400;
+  color: #686868;
+}
+.container-wallet-statistic {
+  width: 275px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+}
+.box-statistic {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin: 15px 0px;
+  border-top: 1px solid #e9e9e9;
+  padding: 15px 0px;
+  border-bottom: 1px solid #e9e9e9;
+}
+.box-statistic div {
+  display: flex;
+  flex-direction: column;
+}
+.box-statistic div .statistic-title {
+  color: #686868;
+  font-size: 12px;
+  font-weight: 500;
+}
+.end-box {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+.statistic-data {
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 5px;
+}
+.box-asset-select {
+  display: flex;
+  align-items: center;
+}
+.box-asset-select span {
+  margin-left: 5px;
+}
+.container-top-row img {
+  width: 20px;
+  height: 20px;
+}
+.end-container-wallet {
+  margin-top: 24px;
+}
+.orange {
+  color: #C96203;
+}
+.green {
+  color: #09A706;
+}
+.graph canvas {
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+
+/*--------------*/
+
+
+
+/* CENTER CONTAINER */
+
+.ca-ctr-container {
+  /*border: 1px solid rgb(255, 0, 0);*/
+  width: 50%;
+  min-width: 730px;
+  display: flex;
+  justify-content: center;
+}
+
+/*---------------*/
+
+
+
+/* LEFT CONTAINER */
+
+.ca-lft-container {
+  /*border: 1px solid blue;*/
+  width: 25%;
+  min-width: 300px;
+  margin-left: 1%;
+}
+.ca-container-logo {
+  /*border: 1px solid green;*/
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+.ca-container-logo img {
+  width: 180px;
+}
+.ca-container-sold {
+  /*border: 1px solid green;*/
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.ca-container-asset{
+  /*border: 1px solid green;*/
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 6px;
+}
+.ca-container-data {
+  /*border: 1px solid green;*/
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 15px;
+  padding-bottom: 10px;
+}
+
+/*--------------*/  
+
+
+
+/* RIGHT CONTAINER */
+
+.ca-rht-container {
+  /*border: 1px solid rgb(0, 255, 94);*/
+  width: 25%;
+  min-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 0px;
+  margin-right: 1%;
+}
+.ca-container-user {
+  text-align: right;
+  padding: 0px 21px 12px;
+  
+}
+.ca-container-user button {
+  width: 100px;
+  height: 33px;
+  background-color: #ba3333;
+  border-radius: 10px;
+  border: none;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  margin-left: 17px;
+}
+.ca-container-user span {
+  font-size: 12px;
+  font-weight: 600;
+  color: #686868;
+  font-style: italic;
+}
+.ca-container-wallet-data {
+  background-color: #f2f2f2;
+  width: 351px;
+  height: 810px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  min-height: 810px;
+}
+.wallet-name {
+  padding: 22px 22px 0px 22px;
+  display: flex;
+  width: 90%;
+}
+.wallet-name span {
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.number-asset {
+  width: 80px;
+  height: 17px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #686868;
+  background-color: #ffffff;
+  border-radius: 15px;
+  margin-left: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/*--------------*/
 </style>
